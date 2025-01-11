@@ -3,7 +3,7 @@ import ChatBox from '@/components/Chat/chat-box'
 import NavBar from '@/components/Home/navbar'
 import axios from 'axios';
 import { Loader2Icon } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 
 const Chat = () => {

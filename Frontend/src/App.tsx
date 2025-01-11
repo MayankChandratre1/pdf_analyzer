@@ -1,4 +1,4 @@
-import {  useAuth, useUser } from '@clerk/clerk-react'
+import {  useAuth } from '@clerk/clerk-react'
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import SignUpPage from './pages/SignUpPage';
 import Home from './pages/Home';
@@ -6,6 +6,8 @@ import SignInPage from './pages/SignInPage';
 import LandingPage from './pages/LandingPage';
 import NewChat from './pages/NewChat';
 import Chat from './pages/Chat';
+import { useEffect } from 'react';
+import { setAuthToken } from './api/axiosClient';
 
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
@@ -15,6 +17,15 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 };
 
 export default function App() {
+  const {isSignedIn, getToken} = useAuth()
+  useEffect(()=>{
+      const authUser = async () => {
+        if(isSignedIn === undefined) return;
+        const token = await getToken()
+        setAuthToken(token)
+      }
+      authUser()
+    },[isSignedIn])
   return (
     <Router>
       <Routes>
