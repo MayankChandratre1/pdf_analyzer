@@ -6,10 +6,11 @@ import { Label } from '@/components/ui/label'
 import { Upload, X } from 'lucide-react'
 import apiClient from '@/api/axiosClient'
 
-const PdfForm = ({setResponse, setPdfText, setLoading}:{
+const PdfForm = ({setResponse, setPdfText, setLoading, loading}:{
   setResponse: React.Dispatch<React.SetStateAction<string>>,
   setPdfText: React.Dispatch<React.SetStateAction<string>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  loading:boolean
 }) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null)
   const [question, setQuestion] = useState('')
@@ -72,6 +73,7 @@ const PdfForm = ({setResponse, setPdfText, setLoading}:{
           ref={fileInputRef}
           className="hidden"
           id="pdf-upload"
+          disabled={loading || isResponded}
         />
         <Label
           htmlFor="pdf-upload"
@@ -94,7 +96,7 @@ const PdfForm = ({setResponse, setPdfText, setLoading}:{
       <Button
         type="submit"
         className="bg-[#F28B19] hover:bg-[#D47517] text-white"
-        disabled={!pdfFile || isResponded}
+        disabled={!pdfFile || isResponded || loading}
       >
         Send
       </Button>

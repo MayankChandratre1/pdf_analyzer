@@ -1,10 +1,9 @@
 import { AssistantsClient, AzureKeyCredential } from "@azure/openai-assistants";
 import dotenv from 'dotenv';
-import fs from 'fs';
 import { extractPdfText } from '../utils/extractPdfText.js';
 dotenv.config()
 
-export async function processWithAssistant(pdfPath, question) {
+export async function processWithAssistant(pdfBuffer, question) {
   const assistantsClient = new AssistantsClient(
     process.env.AZURE_OPENAI_ENDPOINT,
     new AzureKeyCredential(process.env.AZURE_OPENAI_KEY)
@@ -20,8 +19,7 @@ export async function processWithAssistant(pdfPath, question) {
     });
 
     // Upload the PDF file
-    const pdfContent = fs.readFileSync(pdfPath);
-    const textChunks = await extractPdfText(pdfContent)
+    const textChunks = await extractPdfText(pdfBuffer)
     const thread = await assistantsClient.createThread();
     for (const chunk of textChunks) {
       await assistantsClient.createMessage(
@@ -59,11 +57,9 @@ export async function processWithAssistant(pdfPath, question) {
      console.log(messages, "Run Messages");
     
     // Clean up
-    fs.unlinkSync(pdfPath);
 
     return {messages: messages.data, pdfData: textChunks};
   } catch (error) {
-    fs.unlinkSync(pdfPath);
     console.log(error);
     
     throw error;

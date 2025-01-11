@@ -20,7 +20,7 @@ export const analyze = async (req, res) => {
     if(!userId) return res.status(403).json({message: "Forbidden, Access Denied."})
 
     const question = req.body.question || null;
-    const {messages, pdfData} = await processWithAssistant(req.file.path, question);
+    const {messages, pdfData} = await processWithAssistant(req.file.buffer, question);
 
     // Extract text content from messages
     const analysis = messages.map(message => {

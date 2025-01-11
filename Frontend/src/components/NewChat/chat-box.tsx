@@ -50,7 +50,7 @@ const ChatBox = () => {
           )}
         </div>
       </div>
-      <PdfForm setResponse={setResponse} setLoading={setLoading} setPdfText={setPdfText} />
+      <PdfForm loading={loading} setResponse={setResponse} setLoading={setLoading} setPdfText={setPdfText} />
     </div>
   );
 };
