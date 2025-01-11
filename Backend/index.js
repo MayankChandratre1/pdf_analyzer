@@ -20,6 +20,10 @@ app.use(clerkMiddleware())
 app.use('/api/pdf', pdfAnalyzerRouter);
 app.use('/api/users', userRouter);
 
+app.get("/", (req, res) => {
+    res.send("Healthy Server")
+})
+
 
 app.listen(3002, ()=>{
     console.log("Listening 3002");
