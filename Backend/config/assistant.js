@@ -61,7 +61,7 @@ export async function processWithAssistant(pdfPath, question) {
     // Clean up
     fs.unlinkSync(pdfPath);
 
-    return messages.data;
+    return {messages: messages.data, pdfData: textChunks};
   } catch (error) {
     fs.unlinkSync(pdfPath);
     console.log(error);

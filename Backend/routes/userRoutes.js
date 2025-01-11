@@ -1,24 +1,13 @@
 import express from "express"
+import { getUser, signup, deleteAnalysis, getAllAnalysis, getAnalysis } from "../controller/userController.js"
 
 const userRouter = express.Router()
 
 
-userRouter.post("/signup", async (req, res)=>{
-    console.log(req.body);
-    
-    res.status(200).json({
-        data: req.body
-    })
-})
-
-userRouter.get("/getUser/:clerkId", async (req, res)=>{
-    console.log(req.headers);
-    
-    console.log(req.params);
-    
-    res.status(200).json({
-        data: "Hehe"
-    })
-})
+userRouter.post("/signup", signup)
+userRouter.get("/getUser/:clerkId", getUser)
+userRouter.get("/analysis", getAllAnalysis)
+userRouter.get("/analysis/:id", getAnalysis)
+userRouter.delete("/analysis/:id", deleteAnalysis)
 
 export default userRouter
