@@ -1,6 +1,5 @@
 import { SignIn, useUser } from "@clerk/clerk-react";
 import { useAuth } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import apiClient, { setAuthToken } from "../api/axiosClient";
 import { useLocation } from "react-router-dom";
@@ -8,7 +7,6 @@ import ReactGA from "react-ga4";
 
 export default function SignInPage() {
   const { isSignedIn } = useAuth();
-  const navigate = useNavigate();
   const { user: clerkUser } = useUser();
   const { getToken } = useAuth();
   const location = useLocation();
