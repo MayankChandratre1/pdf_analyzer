@@ -2,8 +2,6 @@ import { SignUp, useUser, useAuth } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import ReactGA from "react-ga4";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -11,11 +9,7 @@ export default function SignUpPage() {
   const { isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: location.pathname });
-  }, [location]);
 
   useEffect(() => {
     if (isSignedIn === null || !clerkUser) return;
