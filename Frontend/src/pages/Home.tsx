@@ -4,12 +4,15 @@ import NavBar from '@/components/Home/navbar'
 import { ArrowUpRight, Loader2Icon, Plus, Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth, useUser } from '@clerk/clerk-react'
 import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 const Home = () => {
   const {isSignedIn, getToken} = useAuth()
+  const {user} = useUser()
   const [analysis, setAnalysis] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -20,10 +23,33 @@ const Home = () => {
       if(isSignedIn === undefined) return;
       const token = await getToken()
       setAuthToken(token)
+      console.log(user);
+      if(user)
+        sendUserDataToBackend(user.id, user.emailAddresses[0].emailAddress)
       getAllAnalysis()
     }
     authUser()
-  },[isSignedIn])
+  },[isSignedIn, user])
+
+  const sendUserDataToBackend = async (
+    clerkId: string,
+    email: string,
+  ): Promise<void> => {
+    try {
+      const resp = await axios.post(`${API_URL}/api/users/signup`, {
+        email,
+        clerkId,
+      });
+      console.log(resp.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.status);
+        console.error(error.response);
+      } else {
+        console.error(error);
+      }
+    }
+  };
 
 
   const getAllAnalysis = async () => {
