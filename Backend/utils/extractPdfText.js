@@ -1,8 +1,8 @@
 import { PDFExtract } from "pdf.js-extract";
 
 export const extractPdfText = async (buffer) => {
+  const options = { disableWorker: true };
   const pdfExtract = new PDFExtract();
-  const options = {}; // Add any specific options if needed
   const chunks = [];
   const maxChunkSize = 2000;
 
