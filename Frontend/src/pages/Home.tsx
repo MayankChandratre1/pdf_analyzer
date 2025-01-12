@@ -104,7 +104,7 @@ const Home = () => {
           <div className='flex-1 overflow-y-auto'>
               {loading && <div className='w-full h-full grid place-items-center'><Loader2Icon className='w-8 h-8 text-orange-400 animate-spin' /></div>}
 
-              { analysis.length <= 0 ? <div className='w-full text-center text-gray-400 p-3'><p>No Analysis Yet</p></div>:<div className='grid grid-cols-1 md:grid-cols-4 gap-3 p-3'>
+              { analysis.length <= 0 ? <div className='w-full text-center text-gray-400 p-3'><p></p></div>:<div className='grid grid-cols-1 md:grid-cols-4 gap-3 p-3'>
                   {analysis.map(item => (
                     <div key={item._id} className='p-3 bg-white border border-orange-500 rounded-xl shadow-md flex flex-col'>
                       <h4 className='font-universe font-semibold'>{item.name}</h4>
