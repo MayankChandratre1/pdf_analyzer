@@ -21,6 +21,7 @@ const Home = () => {
   useEffect(()=>{
     const authUser = async () => {
       if(isSignedIn === undefined) return;
+      setLoading(true)
       const token = await getToken()
       setAuthToken(token)
       console.log(user);
@@ -55,7 +56,7 @@ const Home = () => {
 
   const getAllAnalysis = async () => {
     try{
-      setLoading(true)
+      
       const res = await apiClient.get("/api/users/analysis");
       if(res.data)
         setAnalysis(res.data.analysis)
