@@ -19,6 +19,7 @@ const AudioChat = () => {
   const navigate = useNavigate()
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const initAudio = async () => {
@@ -114,13 +115,15 @@ const AudioChat = () => {
       const message = JSON.parse(event.data);
 
       switch (message.type) {
-        case 'transcript':
+        case 'transcript':{
           setTranscripts(prev => prev.map((transcript, index) => {
             if (index === prev.length - 1) {
               return `${transcript}${message.data}`;
             }
             return transcript;
           }));
+          setUploading(false)
+        }
           break;
         case 'audio':
           try {
@@ -185,6 +188,7 @@ const AudioChat = () => {
     
     
     try {
+      setUploading(true)
       // Read file as base64
       setFileName(file.name);
       const base64 = await new Promise<string>((resolve) => {
@@ -263,7 +267,7 @@ const AudioChat = () => {
             onClick={() => document.getElementById('file-upload')?.click()}
             className="bg-orange-500 hover:bg-orange-600"
           >
-            Upload PDF Text
+            {uploading ? <Loader2 className='w-4 h-4 text-white animate-spin' /> : "Upload PDF"}
           </Button>
           
           {wsRef.current && (

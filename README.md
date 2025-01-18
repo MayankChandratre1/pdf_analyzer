@@ -38,13 +38,11 @@ cd <repository_name>
    ```env
    AZURE_OPENAI_KEY=
    AZURE_OPENAI_ENDPOINT=
-   AZURE_OPENAI_REGION=
-   OPENAI_API_VERSION=
-   AZURE_OPENAI_DEPLOYMENT_NAME=
+   AZURE_OPENAI_ASSISTANT_ID
    MONGODB_URI=
    CLERK_PUBLISHABLE_KEY=
    CLERK_SECRET_KEY=
-   FRONTEND_URL= 
+   FRONTEND_URL= <your_frontend_url>
    ```
 
 3. Install dependencies:
@@ -74,6 +72,7 @@ cd <repository_name>
    ```env
    VITE_CLERK_PUBLISHABLE_KEY=
    VITE_API_URL= <your_backend_url>
+   VITE_WS_URL= <your_websocket_url> eg. wss://your_backend.com
    ```
 
 3. Install dependencies:
