@@ -6,6 +6,8 @@ import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Square } from 'lucide-react';
 
+const wsUrl = import.meta.env.VITE_WS_URL;
+
 const AudioChat = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [transcripts, setTranscripts] = useState<string[]>([""]);
@@ -81,7 +83,7 @@ const AudioChat = () => {
   }
 
   const connectWebSocket = () => {
-    wsRef.current = new WebSocket('ws://localhost:3002');
+    wsRef.current = new WebSocket(wsUrl);
 
     wsRef.current.onopen = () => {
       setIsConnected(true);
