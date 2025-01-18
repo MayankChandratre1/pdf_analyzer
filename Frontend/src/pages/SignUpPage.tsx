@@ -33,11 +33,10 @@ export default function SignUpPage() {
     email: string,
   ): Promise<void> => {
     try {
-      const resp = await axios.post(`${API_URL}/api/users/signup`, {
+       await axios.post(`${API_URL}/api/users/signup`, {
         email,
         clerkId,
       });
-      console.log(resp.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log(error.status);

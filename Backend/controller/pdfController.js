@@ -68,14 +68,11 @@ export const testAssistant =  async (req, res) => {
     try {
       const assistantsClient = new AssistantsClient(
         process.env.AZURE_OPENAI_ENDPOINT,
-        new AzureKeyCredential(process.env.AZURE_OPENAI_KEY)
+        new AzureKeyCredential(process.env.AZURE_OPENAI_KEY),
+        
       );
       
-      const assistant = await assistantsClient.createAssistant({
-        model: process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
-        name: "Test Assistant",
-        instructions: "Test instructions"
-      });
+      const assistant = await assistantsClient.getAssistant(process.env.AZURE_OPENAI_ASSISTANT_ID);
       
       res.json({
         success: true,
@@ -97,7 +94,6 @@ export const testPdf = async (req, res) => {
         return res.status(400).json({ error: 'No PDF file uploaded' });
       }
       const pdfContent = fs.readFileSync(req.file.path);
-      console.log(pdfContent);
       const chunks = await extractPdfText(pdfContent)
       fs.unlinkSync(req.file.path);
       res.send(chunks)
@@ -105,5 +101,35 @@ export const testPdf = async (req, res) => {
       console.log(Err);
       res.send("err")
       
+    }
+  }
+
+  export const editAnalysis = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { response, name } = req.body;
+      
+  
+      const analysis = await Analysis.findById(id);
+
+      if (!analysis) {
+        return res.status(404).json({ message: 'Analysis not found' });
+      }
+
+      analysis.response = response;
+      analysis.name = name;
+      analysis.createdAt = Date.now();
+      await analysis.save();
+
+      res.json({
+        success: true,
+        analysis
+      });
+    }catch(error){
+      console.log(error)
+      res.status(500).json({
+        success: false,
+        error: JSON.stringify(error)
+      });
     }
   }

@@ -8,6 +8,7 @@ import NewChat from './pages/NewChat';
 import Chat from './pages/Chat';
 import { useEffect } from 'react';
 import { setAuthToken } from './api/axiosClient';
+import AudioChatPage from './pages/AudioChatPage';
 
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
@@ -41,6 +42,11 @@ export default function App() {
         <Route path='/newchat' element={
           <ProtectedRoute>
             <NewChat />
+          </ProtectedRoute>
+        } />
+        <Route path='/newaudiochat' element={
+          <ProtectedRoute>
+            <AudioChatPage />
           </ProtectedRoute>
         } />
       </Routes>

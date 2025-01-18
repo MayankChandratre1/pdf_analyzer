@@ -1,6 +1,17 @@
 import { PDFExtract } from "pdf.js-extract";
 
-export const extractPdfText = async (buffer) => {
+const base64ToBuffer = (base64String) => {
+  try {
+    const base64Data = base64String.includes(',') 
+      ? base64String.split(',')[1] 
+      : base64String;
+    return Buffer.from(base64Data, 'base64');
+  } catch (error) {
+    throw new Error('Invalid base64 data');
+  }
+};
+
+const extractPdfTextBuffer = async (buffer) => {
   const options = { disableWorker: true };
   const pdfExtract = new PDFExtract();
   const chunks = [];
@@ -17,7 +28,6 @@ export const extractPdfText = async (buffer) => {
       pages.forEach((page) => {
         let ch = "";
         page.content.forEach((chunk) => {
-          console.log("\n=>", chunk.str);
           if ((ch + chunk.str).length > maxChunkSize) {
             chunks.push(ch);
             ch = chunk.str;
@@ -36,3 +46,10 @@ export const extractPdfText = async (buffer) => {
     });
   });
 };
+
+const extractPdfText = async (fileData) => {
+  const buffer = base64ToBuffer(fileData);
+  return await extractPdfTextBuffer(buffer);
+};
+
+export { extractPdfText, extractPdfTextBuffer };

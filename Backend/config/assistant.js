@@ -1,6 +1,8 @@
 import { AssistantsClient, AzureKeyCredential } from "@azure/openai-assistants";
 import dotenv from 'dotenv';
-import { extractPdfText } from '../utils/extractPdfText.js';
+import { extractPdfTextBuffer } from '../utils/extractPdfText.js';
+import Analysis from "../model/analysisModel.js";
+import User from "../model/userModel.js";
 dotenv.config()
 
 export async function processWithAssistant(pdfBuffer, question) {
@@ -11,21 +13,18 @@ export async function processWithAssistant(pdfBuffer, question) {
 
   try {
     // Create an assistant
-    const assistant = await assistantsClient.createAssistant({
-      model: process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
-      name: "PDF Analyzer",
-      instructions: "You are an AI assistant specialized in analyzing PDF documents. Please provide detailed analysis based on the content of the uploaded PDF.",
-      tools: [{ type: "code_interpreter" }]
-    });
+    const assistant = await assistantsClient.getAssistant(process.env.AZURE_OPENAI_ASSISTANT_ID);
+
+    
 
     // Upload the PDF file
-    const textChunks = await extractPdfText(pdfBuffer)
+    const textChunks = await extractPdfTextBuffer(pdfBuffer)
     const thread = await assistantsClient.createThread();
     for (const chunk of textChunks) {
       await assistantsClient.createMessage(
         thread.id,
         "user",
-        "Here's a part of the PDF content: " + chunk
+        "Here's a part of the text: " + chunk
       );
     }
 
@@ -35,7 +34,7 @@ export async function processWithAssistant(pdfBuffer, question) {
     await assistantsClient.createMessage(
       thread.id,
       "user",
-      question || "Please analyze this PDF document and provide key insights."
+      question || "Please analyze this text given to you and provide key insights."
     );
 
     // Create and monitor run
@@ -49,12 +48,10 @@ export async function processWithAssistant(pdfBuffer, question) {
       await new Promise(resolve => setTimeout(resolve, timeout));
       if(timeout > 2000) timeout -= 2000
       run = await assistantsClient.getRun(thread.id, run.id);
-       console.log(run, "Run Waiting");
     }
 
     // Get messages
     const messages = await assistantsClient.listMessages(thread.id);
-     console.log(messages, "Run Messages");
     
     // Clean up
 
@@ -65,3 +62,82 @@ export async function processWithAssistant(pdfBuffer, question) {
     throw error;
   }
 }
+
+export async function processWithAssistantText(textToAnalyse, fileName, clerkId, chat) {
+  const assistantsClient = new AssistantsClient(
+    process.env.AZURE_OPENAI_ENDPOINT,
+    new AzureKeyCredential(process.env.AZURE_OPENAI_KEY)
+  );
+
+  try {
+    // Create an assistant
+    const assistant = await assistantsClient.getAssistant(process.env.AZURE_OPENAI_ASSISTANT_ID);
+
+    const thread = await assistantsClient.createThread();
+    for (const chunk of textToAnalyse) {
+      await assistantsClient.createMessage(
+        thread.id,
+        "user",
+        "Here's a part of the text I got from audio assistant as response : " + chunk
+      );
+    }
+
+    // Create a thread
+
+    // Add message to thread
+    await assistantsClient.createMessage(
+      thread.id,
+      "user",
+      "Please analyze this text given to you and provide key insights."
+    );
+
+    // Create and monitor run
+    let run = await assistantsClient.createRun(thread.id, {
+      assistantId: assistant.id
+    });
+
+    // Poll for completion
+    while (run.status === "queued" || run.status === "in_progress") {
+      let timeout = 10000
+      await new Promise(resolve => setTimeout(resolve, timeout));
+      if(timeout > 2000) timeout -= 2000
+      run = await assistantsClient.getRun(thread.id, run.id);
+    }
+
+    // Get messages
+    const messages = await assistantsClient.listMessages(thread.id);
+
+     const analysis = messages.data.map(message => {
+      return {
+        role: message.role,
+        content: message.content.map(c => c.type === 'text' ? c.text.value : null).filter(Boolean)
+      };
+    });
+    const assistanceResponse = analysis.map(message => {
+      if(message.role == 'assistant')
+        return message.content
+      else
+        return ""
+    })
+
+    const reducedResponse = assistanceResponse.reduce((res, message) => res+message+" ","").trim()
+    
+    const user = await User.findOne({clerkId});
+    if(user)
+    await Analysis.create({
+      pdfData: textToAnalyse,
+      userId: user._id,
+      name: fileName,
+      response: reducedResponse,
+      chat: chat || []
+    })
+
+    return {messages: messages.data, pdfData: textToAnalyse};
+  } catch (error) {
+    console.log(error);
+    
+    throw error;
+  }
+}
+
+

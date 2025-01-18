@@ -3,7 +3,7 @@ import '../index.css'
 import NavBar from '@/components/Home/navbar'
 import { ArrowUpRight, Loader2Icon, Plus, Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAuth, useUser } from '@clerk/clerk-react'
 import axios from 'axios'
 
@@ -24,8 +24,7 @@ const Home = () => {
       setLoading(true)
       const token = await getToken()
       setAuthToken(token)
-      console.log(user);
-      if(user){
+      if(user && token){
         await sendUserDataToBackend(user.id, user.emailAddresses[0].emailAddress)
         await getAllAnalysis()
       }
@@ -38,11 +37,10 @@ const Home = () => {
     email: string,
   ): Promise<void> => {
     try {
-      const resp = await axios.post(`${API_URL}/api/users/signup`, {
+      await axios.post(`${API_URL}/api/users/signup`, {
         email,
         clerkId,
       });
-      console.log(resp.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log(error.status);
@@ -54,9 +52,8 @@ const Home = () => {
   };
 
 
-  const getAllAnalysis = async () => {
-    try{
-      
+  const getAllAnalysis = useCallback(async () => {
+    try{        
       const res = await apiClient.get("/api/users/analysis");
       if(res.data)
         setAnalysis(res.data.analysis)
@@ -72,7 +69,7 @@ const Home = () => {
     }finally{
       setLoading(false)
     }
-  }
+  },[apiClient])
 
   const deleteAnalysis = async (id:string) => {
     try{
@@ -97,9 +94,11 @@ const Home = () => {
         <NavBar />
         <div className='flex-1 flex flex-col'>
           <div className=' p-3'>
-            <Link to={"/newchat"}>
+
+            <Link to={"/newaudiochat"}>
               <button className='flex gap-1 bg-blue-500 rounded-xl text-white px-3 py-2 items-center hover:bg-blue-700'><Plus className='w-5 h-5' /> New</button>
             </Link>
+          
           </div>
           <div className='flex-1 overflow-y-auto'>
               {loading && <div className='w-full h-full grid place-items-center'><Loader2Icon className='w-8 h-8 text-orange-400 animate-spin' /></div>}
@@ -107,7 +106,7 @@ const Home = () => {
               { analysis.length <= 0 ? <div className='w-full text-center text-gray-400 p-3'><p></p></div>:<div className='grid grid-cols-1 md:grid-cols-4 gap-3 p-3'>
                   {analysis.map(item => (
                     <div key={item._id} className='p-3 bg-white border border-orange-500 rounded-xl shadow-md flex flex-col'>
-                      <h4 className='font-universe font-semibold'>{item.name}</h4>
+                      <h4 className='font-universe font-semibold text-wrap overflow-hidden hover:overflow-visible hover:bg-white hover:w-fit'>{item.name}</h4>
                       <p className='text-xs text-gray-500'>{item.response.substring(0,50)}...</p>
                       <div className='flex justify-between items-end mt-4 flex-1'>
                         <Link to={`/chat/${item._id}`} className='flex gap-1 items-center'>Open <ArrowUpRight className='w-4 h-4' /></Link>

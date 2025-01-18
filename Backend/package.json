@@ -23,6 +23,9 @@
     "mongoose": "^8.9.4",
     "multer": "^1.4.5-lts.1",
     "pdf.js-extract": "^0.2.1",
-    "pdfjs-dist": "^4.10.38"
+    "pdfjs-dist": "^4.10.38",
+    "ws": "^8.18.0",
+    "rt-client": "https://github.com/Azure-Samples/aoai-realtime-audio-sdk/releases/download/js/v0.5.2/rt-client-0.5.2.tgz",
+    "@azure/core-auth": "^1.9.0"
   }
 }

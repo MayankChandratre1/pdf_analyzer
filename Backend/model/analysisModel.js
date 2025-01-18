@@ -5,7 +5,8 @@ const analysisSchema = new mongoose.Schema({
     userId:{type:mongoose.Types.ObjectId, ref:"User"},
     name:{type:String, required:true},
     createdAt:{type:String, default: Date.now()},
-    response:{type:String, required:true}
+    response:{type:String, required:true},
+    chat: {type: [String], default: []}
 })
 
 const Analysis = mongoose.model("Analysis", analysisSchema);

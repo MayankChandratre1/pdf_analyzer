@@ -4,7 +4,7 @@ import User from "../model/userModel.js";
 export const signup = async (req, res)=>{
     try{
         const data = req.body
-        const existUser = await User.findOne({clerkId: data.clerkid})
+        const existUser = await User.findOne({clerkId: data.clerkId})
         if(existUser){
             existUser.$set(data)
             await existUser.save()
@@ -26,7 +26,6 @@ export const signup = async (req, res)=>{
 export const getUser = async (req, res)=>{
     try{
         const clerkId = req.params.clerkId
-        console.log(req.auth);
         
         const user = await User.findOne({clerkId})
         if(!user) return res.status(404).json({
@@ -63,7 +62,9 @@ export const deleteAnalysis = async (req, res) => {
 
 export const getAllAnalysis = async (req, res) => {
     try{
-        const clerkId = req.auth.userId
+        const clerkId = req.auth.userId;
+        
+        
         const user = await User.findOne({clerkId})
         if(!user) return res.status(404).json({
             message: "User Not Found"

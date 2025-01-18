@@ -13,7 +13,13 @@ const Chat = () => {
     const [name, setName] = useState("")
     const [date, setDate] = useState("")
     const [loading, setLoading] = useState(false)
+    const [chat, setChat] = useState<string[]>([])
     const [error, setError] = useState("")
+
+    const editNameAndResponse = (name:string, response:string) => {
+        setName(name)
+        setResponse(response)
+    }
 
     useEffect(()=>{
         getAnalysis()
@@ -28,6 +34,7 @@ const Chat = () => {
               setResponse(res.data.analysis.response)
               setName(res.data.analysis.name)
               setDate(res.data.analysis.createdAt)
+              setChat(res.data.analysis.chat || [])
           }
         }catch(err){
           console.log(err);
@@ -45,7 +52,7 @@ const Chat = () => {
         <NavBar  back/>
         {loading && <div className='w-full h-full grid place-items-center'><Loader2Icon className='w-8 h-8 text-orange-400 animate-spin' /></div>}
               {error && <div className='w-full text-center text-red-500'><p>{error}</p></div>}
-        {response && <ChatBox date={date} name={name} pdfText={pdfText} response={response} />}
+        {response && id && <ChatBox chat={chat} editNameAndResponse={editNameAndResponse} id={id} date={date} name={name} pdfText={pdfText} response={response} />}
     </div>
   )
 }
