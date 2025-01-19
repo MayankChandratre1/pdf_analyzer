@@ -119,7 +119,9 @@ cd <repository_name>
 
    1. Create a new project on Vercel.
    2. Select the `/Frontend` folder of the repository.
-   3. Add the required environment variables, including:
+   3. Add the required environment variables mentioned above.
+
+   **NOTE**: Remember to set these two env variables correctly
 
       ```env
       VITE_API_URL=<your_backend_url> # e.g., https://your_backend.com
