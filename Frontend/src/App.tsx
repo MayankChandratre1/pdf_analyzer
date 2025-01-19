@@ -5,8 +5,8 @@ import SignInPage from './pages/SignInPage';
 import LandingPage from './pages/LandingPage';
 import { useEffect } from 'react';
 import { setAuthToken } from './api/axiosClient';
-import Home2 from './pages/Home2';
-import AudioChatPage2 from './pages/AudioChatPage2';
+import Home from './pages/Home';
+import AudioChatPage from './pages/AudioChatPage';
 import GenerateReportPage from './pages/GenerateReport';
 
 
@@ -32,10 +32,10 @@ export default function App() {
         <Route path='/signup' element={<SignUpPage />} />
         <Route path='/signin' element={<SignInPage />} />
         <Route path='/' element={<LandingPage />} />
-        <Route path='/home' element={<Home2 />} />
+        <Route path='/home' element={<Home />} />
         <Route path='/newaudiochat/:id' element={
           <ProtectedRoute>
-            <AudioChatPage2 />
+            <AudioChatPage />
           </ProtectedRoute>
         } />
         <Route path='/generatereport/:id' element={
