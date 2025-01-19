@@ -42,7 +42,7 @@ cd <repository_name>
    MONGODB_URI=
    CLERK_PUBLISHABLE_KEY=
    CLERK_SECRET_KEY=
-   FRONTEND_URL= <your_frontend_url>
+   UPLOADTHING_TOKEN=
    ```
 
 3. Install dependencies:

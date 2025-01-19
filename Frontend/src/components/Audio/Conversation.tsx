@@ -219,12 +219,19 @@ const Conversation = ({analysis}:{
   
 
   const saveAndAnalyse =useCallback( async () => {
+    setLoading(true)
+     try {
       await apiClient.post('/api/pdf/saveconversation',{
         ...analysis,
         chat: transcripts,
         transcripts: trans
       })
       navigate("/home")
+     } catch (error) {
+       console.error('Error processing audio message:', error);
+     }finally{
+        setLoading(false)
+     }
   }, [transcripts, trans,user]);
 
 

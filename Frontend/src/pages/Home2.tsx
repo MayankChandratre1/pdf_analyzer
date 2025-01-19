@@ -167,7 +167,7 @@ const Home2 = () => {
                     </Button>
                   </div>
                 </div>
-              ))}
+              )).reverse()}
             
             </div>
 
@@ -245,7 +245,7 @@ const Home2 = () => {
                     </a>
                   </div>
                 </div>
-              ))}
+              )).reverse()}
             </div>
           )}
         </main>
